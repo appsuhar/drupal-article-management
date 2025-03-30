@@ -1,0 +1,14 @@
+name: Custom Theme
+type: theme
+description: Custom theme for Article
+core_version_requirement: ^10
+base theme: claro
+regions:
+  header: Header
+  featured: Featured
+  content: Content
+  sidebar_first: First sidebar
+  sidebar_second: Second sidebar
+  footer: Footer  
+libraries:
+  - mytheme/global-styling  
