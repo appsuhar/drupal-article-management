@@ -1,0 +1,30 @@
+services:
+  drupal:
+    image: drupal:10
+    ports:
+      - "8080:80"
+    volumes:
+      - drupal-data:/var/www/html
+      - ./themes/custom:/var/www/html/themes/custom
+      - ./modules/custom:/var/www/html/modules/custom       
+    depends_on:
+      - db
+
+  db:
+    image: mariadb:10.6
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: drupal
+      MYSQL_USER: drupal
+      MYSQL_PASSWORD: drupalpassword
+    volumes:
+      - db-data:/var/lib/mysql
+
+  adminer:
+    image: adminer
+    ports:
+      - "8081:8080"
+
+volumes:
+  drupal-data:
+  db-data:
