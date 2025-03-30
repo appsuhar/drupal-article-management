@@ -1,0 +1,53 @@
+<?php
+
+use Drupal\Core\Session\AccountInterface;
+use Drupal\node\Entity\Node;
+use Drupal\Core\Block\BlockBase;
+
+/**
+ * Implements hook_help().
+ */
+function article_stats_help($route_name, \Drupal\Core\Routing\RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.article_stats':
+      return '<p>' . t('Displays the total number of articles authored by the current user.') . '</p>';
+  }
+}
+
+/**
+ * Provides a 'ArticleStatsBlock' block.
+ */
+class ArticleStatsBlock extends BlockBase {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function build() {
+    $account = \Drupal::currentUser();
+    if ($account->isAuthenticated()) {
+      $query = \Drupal::entityQuery('node')
+        ->condition('type', 'article')
+        ->condition('uid', $account->id());
+      $nids = $query->execute();
+
+      $articles = Node::loadMultiple($nids);
+      $count = count($articles);
+
+      return [
+        '#markup' => t('Total articles authored: @count', ['@count' => $count]),
+        '#cache' => [
+          'contexts' => ['user'],
+        ],
+      ];
+    }
+    return [];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getCacheContexts() {
+    return ['user'];
+  }
+}
+
